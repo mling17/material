@@ -1,87 +1,148 @@
+
 """
-3-->三
-2--》二
-0--》零
-字典
+1. 字符串转成列表
+2。 从列表的末尾开始往外弹出字符
+3。 弹出字符组成一个新的字符串
+4。 如果新字符串长度是4就加入到组中
+5。 循环结束如果新字符串长度不等于0就加到组中
+6。 返回分组
 """
-import random
+
+
+def four_split(num):
+    # 1. 字符串转成列表
+    num = list(num)
+    group = []
+    # 2。 从列表的末尾开始往外弹出字符
+    temp = ''
+    for i in range(len(num)):
+        # 3。 弹出字符组成一个新的字符串
+        temp = num.pop() + temp
+        if len(temp) == 4:
+            # 4。 如果新字符串长度是4就加入到组中
+            group.insert(0, temp)
+            temp = ''
+    # 5。 循环结束如果新字符串长度不等于0就加到组中
+    if len(temp) != 0:
+        group.insert(0, temp)
+    # group.reverse()
+    # 6。 返回分组
+    return group
+
+
+# ret = four_split(n)
+
 
 dict_ref = {'1': '一', '2': '二', '3': '三', '4': '四', '5': '五', '6': '六', '7': '七', '8': '八', '9': '九', '0': '零'}
+digit = ['十', '百', '千']
+
+n = '987600021010'
 
 
-# 列表插入  insert
+# n = '9876543201'
+
+
 def exchange(num):
-    level = ['十', '百', '千']
+    # 0。 去左侧的零
+    num = num.lstrip('0')
+    # 1. 先把数字转成汉字
     temp = []
     for i in num:
         temp.append(dict_ref[i])
     for j in range(len(temp) - 1):
-        temp.insert(-(2 * j + 1), level[j])
+        temp.insert(-(2 * j + 1), digit[j])
     ans = ''.join(temp)
-    for i in ['零十', '零百', '零千', '零零', '零零零']:
-        if i in ans:
-            ans = ans.replace(i, '零')
-    ans = ans.rstrip('零')
+    while '零千' in ans or '零百' in ans or '零十' in ans or '零零' in ans or '零零零' in ans:
+        for i in ('零千', '零百', '零十', '零零', '零零零'):
+            if i in ans:
+                ans = ans.replace(i, '零')
+    if ans[-1] == '零':
+        return ans[:-1]
     return ans
+    """"
+    特殊情况
+    1。 零千
+    2。 零百
+    3。 零十
+    4。 零零
+    5。 零零零
+    6。 末尾是零
     """
-        ['三', '二', '零', '一']
-    0   -1   0      ['三', '二', '零', '十','一']
-    1   -3   1      ['三', '二','百'， '零', '十','一']
-    2   -5   2
-    x   -(x*2+1)    j
+
+
+# 1. 分组
+num_split = four_split(n)
+# 2。 根据分组创建数级列表
+if len(num_split) == 3:
+    units = ['亿', '万', '']
+elif len(num_split) == 2:
+    units = ['万', '']
+else:
+    units = ['']
+# 3。 把数字和数级连接
+ans = ''
+for index, num in enumerate(num_split):
+    ret = exchange(num)
+    unit = units[index]
+    ans = ans + ret + unit
+print(ans)
+
+
+
+
+
+# 杨辉三角
+
+dict_ref = {'1': '一', '2': '二', '3': '三', '4': '四', '5': '五', '6': '六', '7': '七', '8': '八', '9': '九', '0': '零'}
+digit = ['十', '百', '千']
+
+n = '987600021010'
+
+
+# n = '9876543201'
+
+
+def exchange(num):
+    # 0。 去左侧的零
+    num = num.lstrip('0')
+    # 1. 先把数字转成汉字
+    temp = []
+    for i in num:
+        temp.append(dict_ref[i])
+    for j in range(len(temp) - 1):
+        temp.insert(-(2 * j + 1), digit[j])
+    ans = ''.join(temp)
+    while '零千' in ans or '零百' in ans or '零十' in ans or '零零' in ans or '零零零' in ans:
+        for i in ('零千', '零百', '零十', '零零', '零零零'):
+            if i in ans:
+                ans = ans.replace(i, '零')
+    if ans[-1] == '零':
+        return ans[:-1]
+    return ans
+    """"
+    特殊情况
+    1。 零千
+    2。 零百
+    3。 零十
+    4。 零零
+    5。 零零零
+    6。 末尾是零
     """
 
 
-# ret = exchange(n)
-# print(ret)
-def four_split(num):
-    num_list = list(num)
-    temp = ''
-    group = []
-    for i in range(len(num_list)):
-        temp = num_list.pop() + temp
-        if len(temp) == 4:
-            group.insert(0, temp)
-            temp = ''
-    if temp != '':
-        group.insert(0, temp)
-    return group
-
-
-x = 0
-while x < 10:
-    n = str(random.randint(1, 99999999))
-    print(f'{x}---->', n, end='\t')
-    num_split = four_split(n)
-    ans = ''
-    for index, i in enumerate(num_split):
-        if len(num_split) == 3:
-            list_ref = ['亿', '万', '']
-        elif len(num_split) == 2:
-            list_ref = ['万', '']
-        else:
-            list_ref = ['']
-        num = exchange(i)
-        unit = list_ref[index]
-        ans = ans + num + unit
-    print(ans)
-    x += 1
-
-"""
-1. 千位转换：
-    -  将数字转成汉字，并转转成一个列表
-    - 在相应的位置插入数位，千百十，
-    - 含有['零十', '零百', '零千', '零零', '零零零']的情况替换成零
-    - 末尾有零的情况要去掉零
-2。 分组
-    - 把数字转成列表
-    - 在循环，从末尾开始pop组成一个新的字符串（四个长度）
-    - 新的字符串插入都组
-
-3。 各组转换完成后加入数级
-
-课堂Bugs：
-    1。 exchange函数，没有处理读数末尾是零的情况，应当使用rstrip将右侧的零去掉
-    2。 four_split函数，当所有分组都是四位的时候，在for循环外应该判断temp是否是''，当是''时候不应该加入到group里
-    3。 当分组只有一组的时候，应该加上else:list_ref = ['']
-"""
+# 1. 分组
+num_split = four_split(n)
+# 2。 根据分组创建数级列表
+if len(num_split) == 3:
+    units = ['亿', '万', '']
+elif len(num_split) == 2:
+    units = ['万', '']
+else:
+    units = ['']
+# 3。 把数字和数级连接
+ans = ''
+for index, num in enumerate(num_split):
+    ret = exchange(num)
+    unit = units[index]
+    ans = ans + ret + unit
+print(ans)

@@ -1,20 +1,21 @@
-def triangle_2(n):
-    """
-    :param n: 需要生成的杨辉三角行数
-    :return:
-    """
-    triangle = [1]  # 初始化杨辉三角
-    for i in range(n):
-        yield triangle
-        triangle.append(0)  # 在最后一位加个0，用于计算下一行
-        # triangle = [triangle[j] + triangle[j - 1] for j in range(len(triangle))]
-        temp = []
-        triangle = [1, 1, 0]
-        for j in range(len(triangle)):
-            temp.append(triangle[j] + triangle[j - 1])  # [1,1]
-        triangle = temp
+# 输入层数n，打印n层杨辉三角
+n = 5
+triangle = []
+for i in range(n):
+    temp = []
+    if i == 0:
+        temp = [1]
+    elif i == 1:
+        temp = [1, 1]
+    else:
+        for j in range(i + 1):  # i=3, j = 0,1,2
+            if j == 0 or j == i:
+                temp.append(1)  # temp= [1,]
+            else:
+                temp.append(triangle[i - 1][j - 1] + triangle[i - 1][j])
+    triangle.append(temp)
+center = len(str(triangle[-1]).strip('[').strip(']').replace(',', '    '))
+for i in triangle:
+    i = str(i).strip('[').strip(']').replace(',', '    ')
+    print(i.center(center))
 
-
-for i in triangle_2(10):
-    print(i)
-    # print(''.join(str(i)).center(50))  # 格式化输出
